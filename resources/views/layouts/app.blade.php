@@ -78,47 +78,11 @@
 </head>
 <body class="bg-slate-200 min-h-screen text-slate-800 selection:bg-pink-300 selection:text-slate-900 font-sans" style="overscroll-behavior-y: contain;">
 
-    <!-- 🐷 PIG GLOBAL LOADING OVERLAY -->
-    <div id="pig-loading-global" class="fixed inset-0 z-[99999] bg-slate-900/75 backdrop-blur-sm flex flex-col items-center justify-center hidden">
-        <div class="flex flex-col items-center gap-4">
-            <div class="pig-bounce">
-                <div class="pig-body">
-                    <div class="pig-ear pig-ear-left"></div>
-                    <div class="pig-ear pig-ear-right"></div>
-                    <div class="pig-head">
-                        <div class="pig-eye pig-eye-left"></div>
-                        <div class="pig-eye pig-eye-right"></div>
-                        <div class="pig-snout">
-                            <div class="pig-nostril"></div>
-                            <div class="pig-nostril"></div>
-                        </div>
-                        <div class="pig-blush pig-blush-left"></div>
-                        <div class="pig-blush pig-blush-right"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="flex gap-3">
-                <span class="pig-coin pig-coin-1">💰</span>
-                <span class="pig-coin pig-coin-2">🪙</span>
-                <span class="pig-coin pig-coin-3">💰</span>
-            </div>
-            <p class="text-white font-black text-lg tracking-widest">Loading...</p>
-            <div class="flex gap-2">
-                <div class="pig-dot pig-dot-1"></div>
-                <div class="pig-dot pig-dot-2"></div>
-                <div class="pig-dot pig-dot-3"></div>
-            </div>
-        </div>
-    </div>
-
     <!-- 🐷 PULL TO REFRESH INDICATOR -->
     <div id="ptr-wrap" class="fixed top-0 inset-x-0 z-[99998] flex justify-center" style="pointer-events:none; transform:translateY(-140px); transition:none;">
-        <div class="bg-orange-50 border-4 border-t-0 border-slate-800 rounded-b-3xl px-8 pt-2 pb-4 shadow-[0_6px_0_0_rgba(30,41,59,1)] flex flex-col items-center gap-1.5 min-w-[180px]">
-            <div id="ptr-pig-wrap" style="font-size:48px; transition: transform 0.2s ease; display:inline-block;">🐷</div>
-            <p id="ptr-text" class="text-xs font-black text-slate-700 whitespace-nowrap">Tarik untuk refresh</p>
-            <div class="w-full bg-slate-200 border-2 border-slate-400 rounded-full h-2 overflow-hidden">
-                <div id="ptr-bar" class="h-full rounded-full transition-all duration-100" style="width:0%; background:#f9a8d4;"></div>
-            </div>
+        <div class="bg-orange-50 border-4 border-t-0 border-slate-800 rounded-b-3xl px-6 pt-2 pb-5 shadow-[0_6px_0_0_rgba(30,41,59,1)] flex flex-col items-center gap-0">
+            <div id="ptr-pig-wrap" style="font-size:56px; transition: transform 0.2s ease; display:inline-block; line-height:1;">🐷</div>
+            <p class="text-sm font-black text-slate-700">Hallo</p>
         </div>
     </div>
 
@@ -339,19 +303,17 @@
         if (el) el.classList.remove('hidden');
     }
 
-    // Reset PTR + pig loader on bfcache (back/forward)
+    // Reset PTR on bfcache (back/forward)
     window.addEventListener('pageshow', function(e) {
-        var el = document.getElementById('pig-loading-global') || document.getElementById('pig-loading');
-        if (el) el.classList.add('hidden');
         var ptr = document.getElementById('ptr-wrap');
+        var pig = document.getElementById('ptr-pig-wrap');
         if (ptr) { ptr.style.transition = 'none'; ptr.style.transform = 'translateY(-140px)'; }
+        if (pig) pig.style.transform = 'scale(1) rotate(0deg)';
     });
 
     // ===== CUSTOM PULL-TO-REFRESH =====
     (function() {
         var ptrWrap = document.getElementById('ptr-wrap');
-        var ptrText = document.getElementById('ptr-text');
-        var ptrBar  = document.getElementById('ptr-bar');
         var ptrPig  = document.getElementById('ptr-pig-wrap');
         if (!ptrWrap) return;
 
@@ -362,9 +324,7 @@
         function snapBack() {
             ptrWrap.style.transition = 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1)';
             ptrWrap.style.transform  = 'translateY(-140px)';
-            if (ptrBar) { ptrBar.style.width = '0%'; ptrBar.style.background = '#f9a8d4'; }
-            if (ptrText) ptrText.textContent = 'Tarik untuk refresh';
-            if (ptrPig)  ptrPig.style.transform = 'scale(1) rotate(0deg)';
+            if (ptrPig) ptrPig.style.transform = 'scale(1) rotate(0deg)';
         }
 
         document.addEventListener('touchstart', function(e) {
@@ -376,7 +336,6 @@
             }
         }, { passive: true });
 
-        // passive: FALSE — agar bisa preventDefault() untuk matikan Chrome native PTR
         document.addEventListener('touchmove', function(e) {
             if (!isPulling || isRefreshing) return;
             currentY = e.touches[0].pageY;
@@ -391,17 +350,9 @@
             var prog = Math.min(dy / THRESHOLD, 1);
 
             ptrWrap.style.transform = 'translateY(' + (pull - 140) + 'px)';
-            if (ptrBar) ptrBar.style.width = (prog * 100) + '%';
 
-            if (prog >= 1) {
-                if (ptrText) ptrText.textContent = '🎉 Lepas untuk refresh!';
-                if (ptrBar)  ptrBar.style.background = '#86efac';
-                if (ptrPig)  ptrPig.style.transform = 'scale(1.3) rotate(-15deg)';
-            } else {
-                if (ptrText) ptrText.textContent = '🐷 Tarik untuk refresh...';
-                if (ptrBar)  ptrBar.style.background = '#f9a8d4';
-                if (ptrPig)  ptrPig.style.transform = 'scale(1) rotate(0deg)';
-            }
+            // Pig animasi: makin ditarik makin besar + miring
+            if (ptrPig) ptrPig.style.transform = 'scale(' + (1 + prog * 0.4) + ') rotate(' + (prog * -20) + 'deg)';
         }, { passive: false });
 
         document.addEventListener('touchend', function(e) {
@@ -410,13 +361,11 @@
             var dy = currentY - startY;
             if (dy >= THRESHOLD && window.scrollY <= 2) {
                 isRefreshing = true;
-                ptrWrap.style.transition = 'transform 0.2s ease';
-                ptrWrap.style.transform  = 'translateY(-15px)';
-                if (ptrText) ptrText.textContent = '🐷 Refreshing...';
-                setTimeout(function() {
-                    showPigLoader();
-                    setTimeout(function() { window.location.reload(); }, 350);
-                }, 300);
+                // Pig senang sebelum reload
+                ptrWrap.style.transition = 'transform 0.15s ease';
+                ptrWrap.style.transform  = 'translateY(-10px)';
+                if (ptrPig) ptrPig.style.transform = 'scale(1.5) rotate(10deg)';
+                setTimeout(function() { window.location.reload(); }, 450);
             } else {
                 snapBack();
             }
@@ -424,6 +373,7 @@
         }, { passive: true });
     })();
     </script>
+
 
 
 
