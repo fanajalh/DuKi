@@ -3,6 +3,66 @@
 @section('title', 'Tarik Dana')
 
 @section('content')
+
+{{-- 🐷 PIG LOADING OVERLAY --}}
+<div id="pig-loading" class="fixed inset-0 z-[9999] bg-slate-900/70 backdrop-blur-sm flex flex-col items-center justify-center hidden">
+    <div class="flex flex-col items-center gap-4">
+        <div class="pig-bounce">
+            <div class="pig-body">
+                <div class="pig-ear pig-ear-left"></div>
+                <div class="pig-ear pig-ear-right"></div>
+                <div class="pig-head">
+                    <div class="pig-eye pig-eye-left"></div>
+                    <div class="pig-eye pig-eye-right"></div>
+                    <div class="pig-snout">
+                        <div class="pig-nostril pig-nostril-left"></div>
+                        <div class="pig-nostril pig-nostril-right"></div>
+                    </div>
+                    <div class="pig-blush pig-blush-left"></div>
+                    <div class="pig-blush pig-blush-right"></div>
+                </div>
+            </div>
+        </div>
+        <div class="coin-container">
+            <div class="coin coin-1">💰</div>
+            <div class="coin coin-2">🪙</div>
+            <div class="coin coin-3">💰</div>
+        </div>
+        <p class="text-white font-black text-xl tracking-wide">Mengirim Permintaan...</p>
+        <div class="flex gap-1.5">
+            <div class="dot dot-1"></div>
+            <div class="dot dot-2"></div>
+            <div class="dot dot-3"></div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .pig-bounce { animation: pigBounce 0.8s ease-in-out infinite alternate; }
+    .pig-body { position: relative; width: 120px; height: 120px; }
+    .pig-ear { position: absolute; width: 36px; height: 36px; background: #f9a8d4; border: 4px solid #1e293b; border-radius: 50% 50% 50% 20% / 50% 50% 20% 50%; top: 4px; z-index: 0; }
+    .pig-ear-left  { left: 4px;  transform: rotate(-30deg); }
+    .pig-ear-right { right: 4px; transform: rotate(30deg) scaleX(-1); }
+    .pig-head { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 110px; height: 100px; background: #fda4af; border: 4px solid #1e293b; border-radius: 55% 55% 50% 50% / 60% 60% 50% 50%; z-index: 1; }
+    .pig-eye { position: absolute; top: 28px; width: 14px; height: 17px; background: #1e293b; border-radius: 50%; animation: pigBlink 3s ease-in-out infinite; }
+    .pig-eye-left  { left: 22px; }
+    .pig-eye-right { right: 22px; }
+    .pig-eye::after { content: ''; position: absolute; top: 3px; left: 3px; width: 5px; height: 5px; background: white; border-radius: 50%; }
+    .pig-snout { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 44px; height: 32px; background: #fb7185; border: 3px solid #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .pig-nostril { width: 9px; height: 11px; background: #be123c; border-radius: 50%; border: 2px solid #1e293b; }
+    .pig-blush { position: absolute; bottom: 32px; width: 18px; height: 10px; background: #fb7185; border-radius: 50%; opacity: 0.6; }
+    .pig-blush-left  { left: 10px; }
+    .pig-blush-right { right: 10px; }
+    .dot { width: 10px; height: 10px; background: white; border-radius: 50%; animation: dotPulse 1.2s ease-in-out infinite; }
+    .dot-1 { animation-delay: 0s; } .dot-2 { animation-delay: 0.2s; } .dot-3 { animation-delay: 0.4s; }
+    .coin-container { position: relative; height: 30px; display: flex; gap: 12px; }
+    .coin { font-size: 20px; animation: coinFall 1.5s ease-in-out infinite; }
+    .coin-1 { animation-delay: 0s; } .coin-2 { animation-delay: 0.3s; } .coin-3 { animation-delay: 0.6s; }
+    @keyframes pigBounce { from { transform: translateY(0px); } to { transform: translateY(-12px); } }
+    @keyframes pigBlink { 0%, 92%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.05); } }
+    @keyframes dotPulse { 0%, 100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
+    @keyframes coinFall { 0% { transform: translateY(-20px); opacity: 0; } 30% { opacity: 1; } 70% { opacity: 1; } 100% { transform: translateY(20px); opacity: 0; } }
+</style>
 <div class="flex flex-col min-h-screen bg-slate-900/60 justify-end items-center backdrop-blur-sm relative">
     
     <a href="{{ url('/dashboard') }}" class="absolute top-6 right-6 w-12 h-12 bg-white border-4 border-slate-800 rounded-full flex items-center justify-center text-xl shadow-cartoon hover:bg-slate-100 text-slate-800">
@@ -82,6 +142,12 @@
                 Ajukan Penarikan! <i class="ph-bold ph-paper-plane-tilt"></i>
             </button>
         </form>
+
+<script>
+document.querySelector('form[action*="/withdraw/request"]').addEventListener('submit', function(e) {
+    document.getElementById('pig-loading').classList.remove('hidden');
+});
+</script>
     </div>
 </div>
 

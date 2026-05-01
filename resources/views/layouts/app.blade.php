@@ -227,6 +227,18 @@
             customClass: { popup: 'rounded-3xl border-4 border-slate-800', confirmButton: 'font-black text-white' }
         });
     @endif
+    @if(session('info'))
+        Swal.fire({
+            icon: 'info',
+            title: 'Info 📢',
+            text: '{{ session("info") }}',
+            confirmButtonText: 'Oke!',
+            confirmButtonColor: '#fbbf24',
+            background: '#fffbeb',
+            color: '#1e293b',
+            customClass: { popup: 'rounded-3xl border-4 border-slate-800', confirmButton: 'font-black text-slate-800' }
+        });
+    @endif
 
     // Global SweetAlert confirm function
     function swalConfirm(formId, title, text) {
