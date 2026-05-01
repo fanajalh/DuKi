@@ -38,6 +38,10 @@
             "dest": "/$1"
         },
         {
+            "src": "/\\.well-known/(.*)",
+            "dest": "/.well-known/$1"
+        },
+        {
             "src": "/(.*)",
             "dest": "/api/index.php"
         }
