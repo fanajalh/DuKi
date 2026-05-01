@@ -78,12 +78,9 @@
 </head>
 <body class="bg-slate-200 min-h-screen text-slate-800 selection:bg-pink-300 selection:text-slate-900 font-sans" style="overscroll-behavior-y: contain;">
 
-    <!-- 🐷 PULL TO REFRESH INDICATOR -->
-    <div id="ptr-wrap" class="fixed top-0 inset-x-0 z-[99998] flex justify-center" style="pointer-events:none; transform:translateY(-140px); transition:none;">
-        <div class="bg-orange-50 border-4 border-t-0 border-slate-800 rounded-b-3xl px-6 pt-2 pb-5 shadow-[0_6px_0_0_rgba(30,41,59,1)] flex flex-col items-center gap-0">
-            <div id="ptr-pig-wrap" style="font-size:56px; transition: transform 0.2s ease; display:inline-block; line-height:1;">🐷</div>
-            <p class="text-sm font-black text-slate-700">Hallo</p>
-        </div>
+    <!-- 🐷 PULL TO REFRESH - floating pig only -->
+    <div id="ptr-wrap" class="fixed top-0 inset-x-0 z-[99998] flex justify-center" style="pointer-events:none; transform:translateY(-80px); transition:none;">
+        <div id="ptr-pig-wrap" style="font-size:72px; line-height:1; display:inline-block; transition: transform 0.15s ease; filter: drop-shadow(0 6px 8px rgba(0,0,0,0.25));">🐷</div>
     </div>
 
     <div class="hidden md:flex min-h-screen">
@@ -307,7 +304,7 @@
     window.addEventListener('pageshow', function(e) {
         var ptr = document.getElementById('ptr-wrap');
         var pig = document.getElementById('ptr-pig-wrap');
-        if (ptr) { ptr.style.transition = 'none'; ptr.style.transform = 'translateY(-140px)'; }
+        if (ptr) { ptr.style.transition = 'none'; ptr.style.transform = 'translateY(-80px)'; }
         if (pig) pig.style.transform = 'scale(1) rotate(0deg)';
     });
 
@@ -323,7 +320,7 @@
 
         function snapBack() {
             ptrWrap.style.transition = 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1)';
-            ptrWrap.style.transform  = 'translateY(-140px)';
+            ptrWrap.style.transform  = 'translateY(-80px)';
             if (ptrPig) ptrPig.style.transform = 'scale(1) rotate(0deg)';
         }
 
@@ -349,7 +346,7 @@
             var pull = Math.min(dy * 0.55, MAX_PULL);
             var prog = Math.min(dy / THRESHOLD, 1);
 
-            ptrWrap.style.transform = 'translateY(' + (pull - 140) + 'px)';
+            ptrWrap.style.transform = 'translateY(' + (pull - 80) + 'px)';
 
             // Pig animasi: makin ditarik makin besar + miring
             if (ptrPig) ptrPig.style.transform = 'scale(' + (1 + prog * 0.4) + ') rotate(' + (prog * -20) + 'deg)';
