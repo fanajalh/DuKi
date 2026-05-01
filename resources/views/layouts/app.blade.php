@@ -269,9 +269,9 @@
             </div>
             
             <div class="flex gap-2">
-                <button id="pwa-install-btn" onclick="installPWA()" class="flex-1 bg-lime-400 border-3 border-slate-800 rounded-xl py-2.5 font-black text-sm text-slate-800 shadow-[2px_2px_0px_0px_rgba(30,41,59,1)] hover:-translate-y-0.5 hover:shadow-[2px_4px_0px_0px_rgba(30,41,59,1)] active:translate-y-0 active:shadow-none transition-all flex items-center justify-center gap-1.5" style="border-width: 3px;">
+                <a href="{{ asset('duki.apk') }}" download id="pwa-install-btn" class="flex-1 bg-lime-400 border-3 border-slate-800 rounded-xl py-2.5 font-black text-sm text-slate-800 shadow-[2px_2px_0px_0px_rgba(30,41,59,1)] hover:-translate-y-0.5 hover:shadow-[2px_4px_0px_0px_rgba(30,41,59,1)] active:translate-y-0 active:shadow-none transition-all flex items-center justify-center gap-1.5" style="border-width: 3px;">
                     <i class="ph-bold ph-download-simple"></i> Install
-                </button>
+                </a>
                 <button onclick="shareDuKi()" class="flex-1 bg-pink-300 border-3 border-slate-800 rounded-xl py-2.5 font-black text-sm text-slate-800 shadow-[2px_2px_0px_0px_rgba(30,41,59,1)] hover:-translate-y-0.5 hover:shadow-[2px_4px_0px_0px_rgba(30,41,59,1)] active:translate-y-0 active:shadow-none transition-all flex items-center justify-center gap-1.5" style="border-width: 3px;">
                     <i class="ph-bold ph-share-network"></i> Bagikan
                 </button>
