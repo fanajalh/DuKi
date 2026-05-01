@@ -22,6 +22,18 @@
             "dest": "/robots.txt"
         },
         {
+            "src": "/manifest.json",
+            "dest": "/manifest.json"
+        },
+        {
+            "src": "/sw.js",
+            "dest": "/sw.js"
+        },
+        {
+            "src": "/icons/(.*)",
+            "dest": "/icons/$1"
+        },
+        {
             "src": "/(.*)",
             "dest": "/api/index.php"
         }
