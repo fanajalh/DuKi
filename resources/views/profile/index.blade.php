@@ -44,7 +44,22 @@
             <div class="bg-white border-4 border-slate-800 rounded-2xl py-3 px-6 inline-block text-2xl font-black text-pink-500 tracking-widest shadow-cartoon-sm mb-4">
                 {{ $user->pairing_code }}
             </div>
-            <p class="text-xs text-slate-500 font-bold">Berikan kode ini ke pasanganmu agar mereka bisa terhubung dengan akunmu.</p>
+            <p class="text-xs text-slate-500 font-bold mb-6">Berikan kode ini ke pasanganmu agar mereka bisa terhubung dengan akunmu.</p>
+            
+            <div class="relative flex py-5 items-center">
+                <div class="flex-grow border-t-4 border-slate-800"></div>
+                <span class="flex-shrink-0 mx-4 text-slate-800 font-black text-sm uppercase">Atau</span>
+                <div class="flex-grow border-t-4 border-slate-800"></div>
+            </div>
+            
+            <p class="text-sm font-black text-slate-800 uppercase tracking-wider mb-2">Masukkan Kode Pasangan</p>
+            <form method="POST" action="{{ url('/pairing') }}" class="flex gap-2">
+                @csrf
+                <input type="text" name="partner_code" placeholder="Cth: DUKI1234" class="flex-1 bg-white border-4 border-slate-800 rounded-xl px-4 py-2 font-black text-slate-800 focus:outline-none focus:ring-4 focus:ring-lime-400 uppercase" required>
+                <button type="submit" class="bg-lime-400 border-4 border-slate-800 rounded-xl px-4 py-2 font-black text-slate-800 shadow-cartoon hover:bg-lime-500 active:translate-y-1 active:shadow-none transition-all">
+                    Hubungkan
+                </button>
+            </form>
         </div>
     @endif
     @endif
