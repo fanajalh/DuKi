@@ -40,9 +40,70 @@
         @media (min-width: 769px) {
             .auth-wrapper { max-width: 480px; border: 4px solid #1e293b; border-radius: 32px; box-shadow: 8px 8px 0px 0px #1e293b; margin: auto; min-height: auto; }
         }
+        /* ===== PIG LOADING ===== */
+        .pig-bounce { animation: pigBounce 0.8s ease-in-out infinite alternate; }
+        .pig-body   { position: relative; width: 120px; height: 120px; }
+        .pig-ear    { position: absolute; width: 36px; height: 36px; background: #f9a8d4; border: 4px solid #1e293b; border-radius: 50% 50% 50% 20% / 50% 50% 20% 50%; top: 4px; z-index: 0; }
+        .pig-ear-left  { left: 4px;  transform: rotate(-30deg); }
+        .pig-ear-right { right: 4px; transform: rotate(30deg) scaleX(-1); }
+        .pig-head   { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 110px; height: 100px; background: #fda4af; border: 4px solid #1e293b; border-radius: 55% 55% 50% 50% / 60% 60% 50% 50%; z-index: 1; }
+        .pig-eye    { position: absolute; top: 28px; width: 14px; height: 17px; background: #1e293b; border-radius: 50%; animation: pigBlink 3s ease-in-out infinite; }
+        .pig-eye-left  { left: 22px; }
+        .pig-eye-right { right: 22px; }
+        .pig-eye::after { content: ''; position: absolute; top: 3px; left: 3px; width: 5px; height: 5px; background: white; border-radius: 50%; }
+        .pig-snout  { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 44px; height: 32px; background: #fb7185; border: 3px solid #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .pig-nostril{ width: 9px; height: 11px; background: #be123c; border-radius: 50%; border: 2px solid #1e293b; }
+        .pig-blush  { position: absolute; bottom: 32px; width: 18px; height: 10px; background: #fb7185; border-radius: 50%; opacity: 0.6; }
+        .pig-blush-left  { left: 10px; }
+        .pig-blush-right { right: 10px; }
+        .pig-dot    { width: 10px; height: 10px; background: white; border-radius: 50%; animation: pigDotPulse 1.2s ease-in-out infinite; }
+        .pig-dot-1  { animation-delay: 0s;   }
+        .pig-dot-2  { animation-delay: 0.2s; }
+        .pig-dot-3  { animation-delay: 0.4s; }
+        .pig-coin   { font-size: 20px; animation: pigCoinFall 1.5s ease-in-out infinite; }
+        .pig-coin-1 { animation-delay: 0s;   }
+        .pig-coin-2 { animation-delay: 0.3s; }
+        .pig-coin-3 { animation-delay: 0.6s; }
+        @keyframes pigBounce   { from { transform: translateY(0px); } to { transform: translateY(-12px); } }
+        @keyframes pigBlink    { 0%,92%,100% { transform: scaleY(1); } 96% { transform: scaleY(0.05); } }
+        @keyframes pigDotPulse { 0%,100% { opacity:.3; transform:scale(.8); } 50% { opacity:1; transform:scale(1.2); } }
+        @keyframes pigCoinFall { 0% { transform:translateY(-20px); opacity:0; } 30%,70% { opacity:1; } 100% { transform:translateY(20px); opacity:0; } }
     </style>
 </head>
 <body class="bg-slate-200 min-h-screen text-slate-800 selection:bg-pink-300 selection:text-slate-900 font-sans">
+
+    <!-- 🐷 PIG GLOBAL LOADING OVERLAY -->
+    <div id="pig-loading-global" class="fixed inset-0 z-[99999] bg-slate-900/75 backdrop-blur-sm flex flex-col items-center justify-center hidden">
+        <div class="flex flex-col items-center gap-4">
+            <div class="pig-bounce">
+                <div class="pig-body">
+                    <div class="pig-ear pig-ear-left"></div>
+                    <div class="pig-ear pig-ear-right"></div>
+                    <div class="pig-head">
+                        <div class="pig-eye pig-eye-left"></div>
+                        <div class="pig-eye pig-eye-right"></div>
+                        <div class="pig-snout">
+                            <div class="pig-nostril"></div>
+                            <div class="pig-nostril"></div>
+                        </div>
+                        <div class="pig-blush pig-blush-left"></div>
+                        <div class="pig-blush pig-blush-right"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <span class="pig-coin pig-coin-1">💰</span>
+                <span class="pig-coin pig-coin-2">🪙</span>
+                <span class="pig-coin pig-coin-3">💰</span>
+            </div>
+            <p class="text-white font-black text-lg tracking-widest">Loading...</p>
+            <div class="flex gap-2">
+                <div class="pig-dot pig-dot-1"></div>
+                <div class="pig-dot pig-dot-2"></div>
+                <div class="pig-dot pig-dot-3"></div>
+            </div>
+        </div>
+    </div>
 
     <!-- Desktop: Two-panel layout -->
     <div class="min-h-screen flex items-center justify-center p-0 md:p-8">
@@ -143,10 +204,35 @@
             customClass: { popup: 'rounded-3xl border-4 border-slate-800', confirmButton: 'font-black', cancelButton: 'font-black' }
         }).then((result) => {
             if (result.isConfirmed) {
+                showPigLoader();
                 document.getElementById(formId).submit();
             }
         });
     }
+
+    // ===== GLOBAL PIG LOADING INTERCEPTOR =====
+    function showPigLoader() {
+        var el = document.getElementById('pig-loading-global') || document.getElementById('pig-loading');
+        if (el) el.classList.remove('hidden');
+    }
+    document.addEventListener('click', function(e) {
+        var link = e.target.closest('a');
+        if (!link) return;
+        var href = link.getAttribute('href');
+        if (!href || href === '' || href.startsWith('#') || href.startsWith('javascript:')) return;
+        if (link.target === '_blank' || link.hasAttribute('download')) return;
+        try {
+            var url = new URL(href, window.location.origin);
+            if (url.origin !== window.location.origin) return;
+        } catch(err) { return; }
+        if (document.querySelector('.swal2-container')) return;
+        showPigLoader();
+    });
+    document.addEventListener('submit', function(e) { showPigLoader(); });
+    window.addEventListener('pageshow', function(e) {
+        var el = document.getElementById('pig-loading-global') || document.getElementById('pig-loading');
+        if (el) el.classList.add('hidden');
+    });
     </script>
     <script>
     // Service Worker
