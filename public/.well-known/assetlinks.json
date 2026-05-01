@@ -5,9 +5,9 @@
     ],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.duki.app",
+      "package_name": "app.vercel.du_ki.twa",
       "sha256_cert_fingerprints": [
-        "63:CB:F2:B1:89:2C:3F:58:73:C0:64:3D:8F:0E:A7:37:77:4E:75:34:D7:32:4E:C8:0E:07:29:6B:73:67:54:1B"
+        "D1:A6:A4:78:D2:6A:76:1E:99:98:EB:9B:BC:B0:77:C9:09:A9:22:29:18:EF:EE:86:91:70:EA:40:69:53:59:9B"
       ]
     }
   }
