@@ -24,7 +24,7 @@
             }
         }
     </script>
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/dist/umd/index.min.js';"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- PWA -->
     <link rel="manifest" href="{{ asset('manifest.json') }}">

@@ -216,7 +216,13 @@
                 <div class="flex items-center justify-between mb-3 pb-3 border-b-2 border-dashed border-slate-200">
                     <span class="text-sm font-black text-slate-500 uppercase tracking-wider">Dari Kantong</span>
                     <span class="bg-lime-200 border-2 border-slate-800 rounded-xl px-3 py-1 text-sm font-black text-slate-800 flex items-center gap-1">
-                        {{ $req->pocket->icon ?? '💰' }} {{ $req->pocket->name }}
+                        @php $icon = $req->pocket->icon ?? '💰'; @endphp
+                        @if(str_starts_with($icon, 'ph-'))
+                            <i class="{{ $icon }}"></i>
+                        @else
+                            {{ $icon }}
+                        @endif
+                        {{ $req->pocket->name }}
                     </span>
                 </div>
 
