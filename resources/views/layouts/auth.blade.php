@@ -134,12 +134,92 @@
     }
     </script>
     <script>
+    // Service Worker
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('/sw.js')
                 .then(reg => console.log('SW registered:', reg.scope))
                 .catch(err => console.log('SW failed:', err));
         });
+    }
+
+    // PWA Install Logic
+    let deferredPrompt = null;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+    });
+
+    window.addEventListener('appinstalled', () => {
+        deferredPrompt = null;
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: 'success',
+                title: 'DuKi Ter-install! 🎉🐷',
+                text: 'Cek home screen HP kamu, DuKi sudah siap!',
+                confirmButtonText: 'Yay!',
+                confirmButtonColor: '#a3e635',
+                background: '#fffbeb',
+                color: '#1e293b',
+                customClass: { popup: 'rounded-3xl border-4 border-slate-800', confirmButton: 'font-black text-slate-800' }
+            });
+        }
+    });
+
+    function installPWA() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choice) => {
+                deferredPrompt = null;
+            });
+        } else {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Cara Install DuKi 📲',
+                    html: '<div style="text-align:left; font-weight:700; font-size:13px; line-height:1.8;">' +
+                          '<b>Android Chrome:</b><br>Klik ⋮ (titik tiga) → "Install app" atau "Add to Home Screen"<br><br>' +
+                          '<b>iPhone Safari:</b><br>Klik ikon Share (kotak+panah) → "Add to Home Screen"<br><br>' +
+                          '<b>Desktop Chrome:</b><br>Klik ikon 📥 di ujung address bar</div>',
+                    confirmButtonText: 'Oke, paham!',
+                    confirmButtonColor: '#a3e635',
+                    background: '#fffbeb',
+                    color: '#1e293b',
+                    customClass: { popup: 'rounded-3xl border-4 border-slate-800', confirmButton: 'font-black text-slate-800' }
+                });
+            } else {
+                alert('Android: Klik titik tiga → Install app\niPhone: Klik Share → Add to Home Screen');
+            }
+        }
+    }
+
+    function shareDuKi() {
+        const shareData = {
+            title: 'DuKi - Tabungan Bersama',
+            text: 'Yuk nabung bareng pakai DuKi! Aplikasi tabungan seru buat pasangan 🐷💰',
+            url: window.location.origin
+        };
+        if (navigator.share) {
+            navigator.share(shareData).catch(() => {});
+        } else {
+            navigator.clipboard.writeText(shareData.url + '\n\n' + shareData.text).then(() => {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Link Disalin! 📋',
+                        text: 'Tinggal paste dan kirim ke teman/pasanganmu!',
+                        confirmButtonText: 'Oke!',
+                        confirmButtonColor: '#a3e635',
+                        background: '#fffbeb',
+                        color: '#1e293b',
+                        customClass: { popup: 'rounded-3xl border-4 border-slate-800', confirmButton: 'font-black text-slate-800' }
+                    });
+                } else {
+                    alert('Link berhasil disalin!');
+                }
+            });
+        }
     }
     </script>
 </body>

@@ -55,10 +55,21 @@
     </div>
 
     <!-- Bottom Buttons -->
-    <div class="px-6 pb-10 space-y-4 relative z-10">
+    <div class="px-6 pb-10 space-y-3 relative z-10">
         <a href="{{ url('/register') }}" class="flex justify-center items-center gap-2 w-full text-center py-5 text-xl font-black text-slate-800 border-4 border-slate-800 rounded-3xl shadow-[5px_5px_0px_0px_rgba(30,41,59,1)] hover:-translate-y-0.5 hover:shadow-[5px_8px_0px_0px_rgba(30,41,59,1)] active:translate-y-1 active:shadow-[2px_2px_0px_0px_rgba(30,41,59,1)] transition-all" style="background: linear-gradient(135deg, #a3e635, #84cc16);">
             Mulai Nabung Bareng! <i class="ph-duotone ph-rocket-launch"></i>
         </a>
+
+        <!-- Install & Share Row -->
+        <div class="flex gap-2">
+            <button id="onboarding-install-btn" onclick="installPWA()" class="flex-1 flex justify-center items-center gap-2 py-3 text-sm font-black text-white bg-pink-500 border-4 border-slate-800 rounded-2xl shadow-[3px_3px_0px_0px_rgba(30,41,59,1)] hover:-translate-y-0.5 hover:shadow-[3px_5px_0px_0px_rgba(30,41,59,1)] active:translate-y-0.5 active:shadow-none transition-all">
+                <i class="ph-bold ph-download-simple text-lg"></i> Install App
+            </button>
+            <button onclick="shareDuKi()" class="flex-1 flex justify-center items-center gap-2 py-3 text-sm font-black text-slate-800 bg-yellow-300 border-4 border-slate-800 rounded-2xl shadow-[3px_3px_0px_0px_rgba(30,41,59,1)] hover:-translate-y-0.5 hover:shadow-[3px_5px_0px_0px_rgba(30,41,59,1)] active:translate-y-0.5 active:shadow-none transition-all">
+                <i class="ph-bold ph-share-network text-lg"></i> Bagikan
+            </button>
+        </div>
+
         <a href="{{ url('/login') }}" class="flex justify-center items-center gap-2 w-full text-center py-4 text-lg font-black text-slate-600 border-4 border-slate-300 rounded-3xl bg-white hover:border-slate-800 hover:text-slate-800 hover:shadow-[4px_4px_0px_0px_rgba(30,41,59,1)] active:translate-y-0.5 transition-all">
             Aku sudah punya akun <i class="ph-duotone ph-hand-waving text-yellow-500"></i>
         </a>
