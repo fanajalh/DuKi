@@ -23,17 +23,25 @@ class TransactionController extends Controller
             'pocket_id' => 'required|exists:pockets,id',
             'amount' => 'required|numeric|min:1',
             'message' => 'nullable|string|max:255',
-            'emoji' => 'nullable|string|max:10',
+            'emoji' => 'nullable|string|max:100',
         ]);
+
+        $emojiMap = [
+            'ph-duotone ph-heart'    => '❤️',
+            'ph-duotone ph-confetti' => '🎉',
+            'ph-duotone ph-fire'     => '🔥',
+            'ph-fill ph-star'        => '⭐',
+        ];
+        $emojiValue = $emojiMap[$request->emoji] ?? '💸';
 
         $transaction = Transaction::create([
             'pocket_id' => $request->pocket_id,
-            'user_id' => Auth::id(),
-            'type' => 'deposit',
-            'amount' => $request->amount,
-            'message' => $request->message,
-            'emoji' => $request->emoji ?? '💸',
-            'status' => 'completed',
+            'user_id'   => Auth::id(),
+            'type'      => 'deposit',
+            'amount'    => $request->amount,
+            'message'   => $request->message,
+            'emoji'     => $emojiValue,
+            'status'    => 'completed',
         ]);
 
         // Notify partner about deposit
@@ -74,6 +82,12 @@ class TransactionController extends Controller
         }
 
         return view('withdrawals.approval', compact('pendingRequest'));
+    }
+    public function showWithdrawRequest($pocket_id = null)
+    {
+        $user = Auth::user();
+        $pockets = $user->pockets()->get();
+        return view('transactions.withdraw-request-modal', compact('pockets', 'pocket_id'));
     }
 
     public function requestWithdraw(Request $request)

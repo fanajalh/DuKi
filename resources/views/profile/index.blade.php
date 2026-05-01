@@ -53,11 +53,11 @@
             </div>
             
             <p class="text-sm font-black text-slate-800 uppercase tracking-wider mb-2">Masukkan Kode Pasangan</p>
-            <form method="POST" action="{{ url('/pairing') }}" class="flex gap-2">
+            <form method="POST" action="{{ url('/pairing') }}" class="flex flex-col gap-3">
                 @csrf
-                <input type="text" name="partner_code" placeholder="Cth: DUKI1234" class="flex-1 bg-white border-4 border-slate-800 rounded-xl px-4 py-2 font-black text-slate-800 focus:outline-none focus:ring-4 focus:ring-lime-400 uppercase" required>
-                <button type="submit" class="bg-lime-400 border-4 border-slate-800 rounded-xl px-4 py-2 font-black text-slate-800 shadow-cartoon hover:bg-lime-500 active:translate-y-1 active:shadow-none transition-all">
-                    Hubungkan
+                <input type="text" name="partner_code" placeholder="Ketik di sini..." class="w-full bg-white border-4 border-slate-800 rounded-2xl px-4 py-4 text-center text-xl font-black text-slate-800 focus:outline-none focus:ring-4 focus:ring-lime-400 uppercase tracking-widest shadow-inner" required>
+                <button type="submit" class="w-full bg-lime-400 border-4 border-slate-800 rounded-2xl px-4 py-4 text-lg font-black text-slate-800 shadow-cartoon hover:bg-lime-500 active:translate-y-1 active:shadow-none transition-all flex justify-center items-center gap-2">
+                    <i class="ph-bold ph-link"></i> Hubungkan Sekarang
                 </button>
             </form>
         </div>

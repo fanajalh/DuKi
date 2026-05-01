@@ -9,7 +9,7 @@
         <i class="ph-bold ph-x"></i>
     </a>
 
-    <div class="w-full max-w-[400px] bg-orange-50 border-x-4 border-t-4 border-slate-800 rounded-t-[2.5rem] p-6 shadow-[0px_-8px_0px_0px_rgba(30,41,59,1)] animate-[slideUp_0.3s_ease-out]">
+    <div class="w-full md:max-w-[400px] bg-orange-50 md:border-x-4 border-t-4 border-slate-800 rounded-t-[2.5rem] p-6 shadow-[0px_-8px_0px_0px_rgba(30,41,59,1)] animate-[slideUp_0.3s_ease-out]">
         <div class="w-16 h-2 bg-slate-800 rounded-full mx-auto mb-6"></div>
         <h2 class="text-2xl font-black text-slate-800 mb-6 text-center flex items-center justify-center gap-2">Nabung ke Kantong <i class="ph-duotone ph-piggy-bank text-pink-500"></i></h2>
 

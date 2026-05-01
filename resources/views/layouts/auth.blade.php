@@ -34,7 +34,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <style>
         @media (max-width: 768px) {
-            .auth-wrapper { max-width: 400px; border-left: 4px solid #1e293b; border-right: 4px solid #1e293b; }
+            .auth-wrapper { width: 100%; max-width: 100%; border-left: 4px solid #1e293b; border-right: 4px solid #1e293b; box-shadow: none !important; }
             .auth-desktop-panel { display: none !important; }
         }
         @media (min-width: 769px) {
@@ -45,7 +45,7 @@
 <body class="bg-slate-200 min-h-screen text-slate-800 selection:bg-pink-300 selection:text-slate-900 font-sans">
 
     <!-- Desktop: Two-panel layout -->
-    <div class="min-h-screen flex items-center justify-center p-4 md:p-8">
+    <div class="min-h-screen flex items-center justify-center p-0 md:p-8">
         <div class="flex items-center gap-8 max-w-5xl w-full">
             
             <!-- Left Panel: Branding (Desktop only) -->
@@ -79,7 +79,7 @@
             </div>
 
             <!-- Right Panel: Auth Form -->
-            <div class="auth-wrapper w-full md:flex-1 min-h-screen md:min-h-0 bg-orange-50 relative overflow-x-hidden flex flex-col shadow-2xl mx-auto">
+            <div class="auth-wrapper w-full md:flex-1 min-h-screen md:min-h-0 bg-orange-50 relative overflow-x-hidden flex flex-col shadow-2xl">
                 
                 <!-- Main Content Area -->
                 <main class="flex-1 overflow-y-auto">

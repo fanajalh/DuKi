@@ -54,6 +54,7 @@ Route::middleware('auth')->group(function() {
     
     // Withdrawals
     Route::get('/withdraw', [TransactionController::class, 'showWithdraw']);
+    Route::get('/withdraw/request/{pocket_id?}', [TransactionController::class, 'showWithdrawRequest']);
     Route::post('/withdraw/request', [TransactionController::class, 'requestWithdraw']);
     Route::post('/withdraw/{id}/approve', [TransactionController::class, 'approveWithdraw']);
     Route::post('/withdraw/{id}/reject', [TransactionController::class, 'rejectWithdraw']);

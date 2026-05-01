@@ -115,8 +115,8 @@
         </div>
     </div>
 
-    <div class="fixed bottom-0 w-full max-w-[400px] bg-white border-t-4 border-slate-800 p-4 flex gap-4 z-50">
-        <a href="{{ url('/withdraw') }}" class="flex-1 flex items-center justify-center gap-2 bg-white border-4 border-slate-800 rounded-2xl py-3 text-center font-black text-slate-800 shadow-cartoon-sm hover:bg-slate-100 active:translate-y-1">
+    <div class="fixed bottom-0 w-full max-w-full md:max-w-[400px] bg-white border-t-4 border-slate-800 p-4 flex gap-4 z-50">
+        <a href="{{ url('/withdraw/request/'.$pocket->id) }}" class="flex-1 flex items-center justify-center gap-2 bg-white border-4 border-slate-800 rounded-2xl py-3 text-center font-black text-slate-800 shadow-cartoon-sm hover:bg-slate-100 active:translate-y-1">
             Tarik Dana <i class="ph-bold ph-upload-simple"></i>
         </a>
         <a href="{{ url('/deposit/'.$pocket->id) }}" class="flex-1 flex items-center justify-center gap-2 bg-lime-400 border-4 border-slate-800 rounded-2xl py-3 text-center font-black text-slate-800 shadow-cartoon-sm hover:bg-lime-300 active:translate-y-1">

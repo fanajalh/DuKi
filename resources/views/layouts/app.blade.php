@@ -37,8 +37,8 @@
         @media (max-width: 768px) {
             .desktop-sidebar { display: none !important; }
             .desktop-topbar { display: none !important; }
-            .app-wrapper { max-width: 400px; border-left: 4px solid #1e293b; border-right: 4px solid #1e293b; }
-            .mobile-nav { display: flex !important; }
+            .app-wrapper { width: 100%; max-width: 100%; border-left: 4px solid #1e293b; border-right: 4px solid #1e293b; box-shadow: none !important; }
+            .mobile-nav { display: flex !important; border-radius: 28px !important; }
         }
         /* Desktop: full layout */
         @media (min-width: 769px) {
@@ -144,52 +144,52 @@
         <div class="app-wrapper w-full max-w-[400px] min-h-screen bg-orange-50 relative overflow-x-hidden flex flex-col shadow-2xl">
             
             <!-- Main Content Area -->
-            <main class="flex-1 overflow-y-auto pb-28">
+            <main class="flex-1 overflow-y-auto pb-32">
                 @yield('content')
             </main>
 
             <!-- Bottom Navigation Bar (Mobile only) -->
-            <nav class="mobile-nav fixed bottom-0 w-full max-w-[400px] bg-white/95 backdrop-blur-md border-t-4 border-slate-800 px-2 py-2 pb-3 flex justify-around items-end z-50" style="border-radius: 20px 20px 0 0; box-shadow: 0px -4px 0px 0px rgba(30,41,59,1);">
+            <nav class="mobile-nav fixed bottom-4 w-[calc(100%-24px)] left-3 max-w-[376px] bg-white/95 backdrop-blur-md border-4 border-slate-800 px-3 py-2.5 flex justify-around items-end z-50" style="border-radius: 28px; box-shadow: 0px 4px 0px 0px rgba(30,41,59,1);">
                 
                 {{-- Beranda --}}
-                <a href="{{ url('/dashboard') }}" class="flex flex-col items-center gap-0.5 group w-16">
-                    <div class="w-11 h-11 rounded-xl flex items-center justify-center text-[22px] transition-all duration-200 {{ request()->is('dashboard') ? 'bg-lime-400 text-slate-800 shadow-[2px_2px_0px_0px_rgba(30,41,59,1)] -translate-y-0.5' : 'text-slate-400 group-hover:text-slate-600 group-hover:bg-slate-100' }}">
+                <a href="{{ url('/dashboard') }}" class="flex flex-col items-center gap-1 group w-16">
+                    <div class="w-12 h-10 rounded-2xl flex items-center justify-center text-[24px] transition-all duration-200 {{ request()->is('dashboard') ? 'bg-lime-400 text-slate-800 border-2 border-slate-800' : 'text-slate-400 group-hover:text-slate-600 group-hover:bg-slate-100' }}">
                         <i class="ph-{{ request()->is('dashboard') ? 'fill' : 'duotone' }} ph-house"></i>
                     </div>
                     <span class="text-[10px] font-extrabold {{ request()->is('dashboard') ? 'text-slate-800' : 'text-slate-400' }}">Beranda</span>
                 </a>
 
                 {{-- Notif --}}
-                <a href="{{ url('/notifications') }}" class="flex flex-col items-center gap-0.5 group w-16 relative">
-                    <div class="w-11 h-11 rounded-xl flex items-center justify-center text-[22px] transition-all duration-200 {{ request()->is('notifications') ? 'bg-yellow-300 text-slate-800 shadow-[2px_2px_0px_0px_rgba(30,41,59,1)] -translate-y-0.5' : 'text-slate-400 group-hover:text-slate-600 group-hover:bg-slate-100' }}">
+                <a href="{{ url('/notifications') }}" class="flex flex-col items-center gap-1 group w-16 relative">
+                    <div class="w-12 h-10 rounded-2xl flex items-center justify-center text-[24px] transition-all duration-200 {{ request()->is('notifications') ? 'bg-yellow-300 text-slate-800 border-2 border-slate-800' : 'text-slate-400 group-hover:text-slate-600 group-hover:bg-slate-100' }}">
                         <i class="ph-{{ request()->is('notifications') ? 'fill' : 'duotone' }} ph-bell"></i>
                     </div>
                     @php $unreadCount = \App\Http\Controllers\NotificationController::unreadCount(); @endphp
                     @if($unreadCount > 0)
-                        <span class="absolute top-0 right-1 min-w-[18px] h-[18px] bg-pink-500 border-2 border-white rounded-full text-[9px] font-black text-white flex items-center justify-center px-1 animate-pulse">{{ $unreadCount > 9 ? '9+' : $unreadCount }}</span>
+                        <span class="absolute -top-1 right-2 min-w-[18px] h-[18px] bg-pink-500 border-2 border-white rounded-full text-[9px] font-black text-white flex items-center justify-center px-1 animate-pulse">{{ $unreadCount > 9 ? '9+' : $unreadCount }}</span>
                     @endif
                     <span class="text-[10px] font-extrabold {{ request()->is('notifications') ? 'text-slate-800' : 'text-slate-400' }}">Notif</span>
                 </a>
 
                 {{-- FAB - Tambah Kantong --}}
-                <a href="{{ url('/pockets/create') }}" class="flex flex-col items-center -mt-8 group">
-                    <div class="w-[56px] h-[56px] rounded-2xl border-4 border-slate-800 flex items-center justify-center text-[28px] font-black transition-all duration-200 text-slate-800 group-hover:-translate-y-1 shadow-[3px_3px_0px_0px_rgba(30,41,59,1)] group-hover:shadow-[3px_5px_0px_0px_rgba(30,41,59,1)] group-active:translate-y-0 group-active:shadow-[1px_1px_0px_0px_rgba(30,41,59,1)]" style="background: linear-gradient(135deg, #bef264, #84cc16);">
+                <a href="{{ url('/pockets/create') }}" class="flex flex-col items-center -mt-6 group relative z-10">
+                    <div class="w-[52px] h-[52px] rounded-full border-4 border-slate-800 flex items-center justify-center text-[24px] font-black transition-all duration-200 text-slate-800 group-hover:-translate-y-1 group-active:translate-y-0 shadow-[0px_4px_0px_0px_rgba(30,41,59,1)] group-active:shadow-none" style="background: linear-gradient(135deg, #bef264, #84cc16);">
                         <i class="ph-bold ph-plus"></i>
                     </div>
-                    <span class="text-[10px] font-extrabold text-lime-600 mt-0.5">Baru</span>
+                    <span class="text-[10px] font-extrabold text-lime-600 mt-1.5">Baru</span>
                 </a>
 
                 {{-- Kantong --}}
-                <a href="{{ url('/dashboard') }}#kantong" class="flex flex-col items-center gap-0.5 group w-16">
-                    <div class="w-11 h-11 rounded-xl flex items-center justify-center text-[22px] transition-all duration-200 text-slate-400 group-hover:text-slate-600 group-hover:bg-slate-100">
+                <a href="{{ url('/dashboard') }}#kantong" class="flex flex-col items-center gap-1 group w-16">
+                    <div class="w-12 h-10 rounded-2xl flex items-center justify-center text-[24px] transition-all duration-200 text-slate-400 group-hover:text-slate-600 group-hover:bg-slate-100">
                         <i class="ph-duotone ph-wallet"></i>
                     </div>
                     <span class="text-[10px] font-extrabold text-slate-400">Kantong</span>
                 </a>
 
                 {{-- Profil --}}
-                <a href="{{ url('/profile') }}" class="flex flex-col items-center gap-0.5 group w-16">
-                    <div class="w-11 h-11 rounded-xl flex items-center justify-center text-[22px] transition-all duration-200 {{ request()->is('profile') || request()->is('settings') ? 'bg-pink-300 text-slate-800 shadow-[2px_2px_0px_0px_rgba(30,41,59,1)] -translate-y-0.5' : 'text-slate-400 group-hover:text-slate-600 group-hover:bg-slate-100' }}">
+                <a href="{{ url('/profile') }}" class="flex flex-col items-center gap-1 group w-16">
+                    <div class="w-12 h-10 rounded-2xl flex items-center justify-center text-[24px] transition-all duration-200 {{ request()->is('profile') || request()->is('settings') ? 'bg-pink-300 text-slate-800 border-2 border-slate-800' : 'text-slate-400 group-hover:text-slate-600 group-hover:bg-slate-100' }}">
                         <i class="ph-{{ request()->is('profile') || request()->is('settings') ? 'fill' : 'duotone' }} ph-user-circle"></i>
                     </div>
                     <span class="text-[10px] font-extrabold {{ request()->is('profile') || request()->is('settings') ? 'text-slate-800' : 'text-slate-400' }}">Profil</span>
