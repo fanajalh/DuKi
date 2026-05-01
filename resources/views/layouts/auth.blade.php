@@ -215,31 +215,16 @@
             customClass: { popup: 'rounded-3xl border-4 border-slate-800', confirmButton: 'font-black', cancelButton: 'font-black' }
         }).then((result) => {
             if (result.isConfirmed) {
-                showPigLoader();
                 document.getElementById(formId).submit();
             }
         });
     }
 
-    // ===== GLOBAL PIG LOADING INTERCEPTOR =====
     function showPigLoader() {
         var el = document.getElementById('pig-loading-global') || document.getElementById('pig-loading');
         if (el) el.classList.remove('hidden');
     }
-    document.addEventListener('click', function(e) {
-        var link = e.target.closest('a');
-        if (!link) return;
-        var href = link.getAttribute('href');
-        if (!href || href === '' || href.startsWith('#') || href.startsWith('javascript:')) return;
-        if (link.target === '_blank' || link.hasAttribute('download')) return;
-        try {
-            var url = new URL(href, window.location.origin);
-            if (url.origin !== window.location.origin) return;
-        } catch(err) { return; }
-        if (document.querySelector('.swal2-container')) return;
-        showPigLoader();
-    });
-    document.addEventListener('submit', function(e) { showPigLoader(); });
+
     window.addEventListener('pageshow', function(e) {
         var el = document.getElementById('pig-loading-global') || document.getElementById('pig-loading');
         if (el) el.classList.add('hidden');
@@ -249,29 +234,32 @@
 
     // ===== CUSTOM PULL-TO-REFRESH =====
     (function() {
-        var ptrWrap   = document.getElementById('ptr-wrap');
-        var ptrText   = document.getElementById('ptr-text');
-        var ptrBar    = document.getElementById('ptr-bar');
-        var ptrPig    = document.getElementById('ptr-pig-wrap');
+        var ptrWrap = document.getElementById('ptr-wrap');
+        var ptrText = document.getElementById('ptr-text');
+        var ptrBar  = document.getElementById('ptr-bar');
+        var ptrPig  = document.getElementById('ptr-pig-wrap');
         if (!ptrWrap) return;
         var startY = 0, currentY = 0, isPulling = false, isRefreshing = false;
-        var THRESHOLD = 100, MAX_PULL = 120;
+        var THRESHOLD = 90, MAX_PULL = 110;
         function snapBack() {
             ptrWrap.style.transition = 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1)';
             ptrWrap.style.transform  = 'translateY(-140px)';
-            if (ptrBar)  { ptrBar.style.width = '0%'; ptrBar.style.background = '#f9a8d4'; }
-            if (ptrText)  ptrText.textContent = 'Tarik untuk refresh';
+            if (ptrBar) { ptrBar.style.width = '0%'; ptrBar.style.background = '#f9a8d4'; }
+            if (ptrText) ptrText.textContent = 'Tarik untuk refresh';
             if (ptrPig)  ptrPig.style.transform = 'scale(1) rotate(0deg)';
         }
         document.addEventListener('touchstart', function(e) {
             if (isRefreshing) return;
             if (window.scrollY <= 0) { startY = currentY = e.touches[0].pageY; isPulling = true; ptrWrap.style.transition = 'none'; }
         }, { passive: true });
+        // passive: false — wajib agar e.preventDefault() bisa matikan Chrome native PTR
         document.addEventListener('touchmove', function(e) {
             if (!isPulling || isRefreshing) return;
             currentY = e.touches[0].pageY;
             var dy = Math.max(0, currentY - startY);
-            if (dy <= 0 || window.scrollY > 0) return;
+            if (dy <= 0) { isPulling = false; return; }
+            if (window.scrollY > 2) { isPulling = false; snapBack(); return; }
+            if (e.cancelable) e.preventDefault();
             var pull = Math.min(dy * 0.55, MAX_PULL);
             var prog = Math.min(dy / THRESHOLD, 1);
             ptrWrap.style.transform = 'translateY(' + (pull - 140) + 'px)';
@@ -279,28 +267,29 @@
             if (prog >= 1) {
                 if (ptrText) ptrText.textContent = '🎉 Lepas untuk refresh!';
                 if (ptrBar)  ptrBar.style.background = '#86efac';
-                if (ptrPig)  ptrPig.style.transform = 'scale(1.25) rotate(-15deg)';
+                if (ptrPig)  ptrPig.style.transform = 'scale(1.3) rotate(-15deg)';
             } else {
                 if (ptrText) ptrText.textContent = '🐷 Tarik untuk refresh...';
                 if (ptrBar)  ptrBar.style.background = '#f9a8d4';
                 if (ptrPig)  ptrPig.style.transform = 'scale(1) rotate(0deg)';
             }
-        }, { passive: true });
+        }, { passive: false });
         document.addEventListener('touchend', function(e) {
             if (!isPulling || isRefreshing) return;
             isPulling = false;
             var dy = currentY - startY;
-            if (dy >= THRESHOLD && window.scrollY <= 0) {
+            if (dy >= THRESHOLD && window.scrollY <= 2) {
                 isRefreshing = true;
-                ptrWrap.style.transition = 'transform 0.25s ease';
-                ptrWrap.style.transform  = 'translateY(-20px)';
+                ptrWrap.style.transition = 'transform 0.2s ease';
+                ptrWrap.style.transform  = 'translateY(-15px)';
                 if (ptrText) ptrText.textContent = '🐷 Refreshing...';
-                setTimeout(function() { showPigLoader(); setTimeout(function() { window.location.reload(); }, 400); }, 350);
+                setTimeout(function() { showPigLoader(); setTimeout(function() { window.location.reload(); }, 350); }, 300);
             } else { snapBack(); }
             currentY = 0;
         }, { passive: true });
     })();
     </script>
+
     <script>
     // Service Worker
     if ('serviceWorker' in navigator) {
