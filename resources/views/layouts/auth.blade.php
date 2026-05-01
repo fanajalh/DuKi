@@ -70,7 +70,7 @@
         @keyframes pigCoinFall { 0% { transform:translateY(-20px); opacity:0; } 30%,70% { opacity:1; } 100% { transform:translateY(20px); opacity:0; } }
     </style>
 </head>
-<body class="bg-slate-200 min-h-screen text-slate-800 selection:bg-pink-300 selection:text-slate-900 font-sans">
+<body class="bg-slate-200 min-h-screen text-slate-800 selection:bg-pink-300 selection:text-slate-900 font-sans" style="overscroll-behavior-y: contain;">
 
     <!-- 🐷 PIG GLOBAL LOADING OVERLAY -->
     <div id="pig-loading-global" class="fixed inset-0 z-[99999] bg-slate-900/75 backdrop-blur-sm flex flex-col items-center justify-center hidden">
@@ -101,6 +101,17 @@
                 <div class="pig-dot pig-dot-1"></div>
                 <div class="pig-dot pig-dot-2"></div>
                 <div class="pig-dot pig-dot-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🐷 PULL TO REFRESH INDICATOR -->
+    <div id="ptr-wrap" class="fixed top-0 inset-x-0 z-[99998] flex justify-center" style="pointer-events:none; transform:translateY(-140px); transition:none;">
+        <div class="bg-orange-50 border-4 border-t-0 border-slate-800 rounded-b-3xl px-8 pt-2 pb-4 shadow-[0_6px_0_0_rgba(30,41,59,1)] flex flex-col items-center gap-1.5 min-w-[180px]">
+            <div id="ptr-pig-wrap" style="font-size:48px; transition: transform 0.2s ease; display:inline-block;">🐷</div>
+            <p id="ptr-text" class="text-xs font-black text-slate-700 whitespace-nowrap">Tarik untuk refresh</p>
+            <div class="w-full bg-slate-200 border-2 border-slate-400 rounded-full h-2 overflow-hidden">
+                <div id="ptr-bar" class="h-full rounded-full transition-all duration-100" style="width:0%; background:#f9a8d4;"></div>
             </div>
         </div>
     </div>
@@ -232,7 +243,63 @@
     window.addEventListener('pageshow', function(e) {
         var el = document.getElementById('pig-loading-global') || document.getElementById('pig-loading');
         if (el) el.classList.add('hidden');
+        var ptr = document.getElementById('ptr-wrap');
+        if (ptr) { ptr.style.transition = 'none'; ptr.style.transform = 'translateY(-140px)'; }
     });
+
+    // ===== CUSTOM PULL-TO-REFRESH =====
+    (function() {
+        var ptrWrap   = document.getElementById('ptr-wrap');
+        var ptrText   = document.getElementById('ptr-text');
+        var ptrBar    = document.getElementById('ptr-bar');
+        var ptrPig    = document.getElementById('ptr-pig-wrap');
+        if (!ptrWrap) return;
+        var startY = 0, currentY = 0, isPulling = false, isRefreshing = false;
+        var THRESHOLD = 100, MAX_PULL = 120;
+        function snapBack() {
+            ptrWrap.style.transition = 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1)';
+            ptrWrap.style.transform  = 'translateY(-140px)';
+            if (ptrBar)  { ptrBar.style.width = '0%'; ptrBar.style.background = '#f9a8d4'; }
+            if (ptrText)  ptrText.textContent = 'Tarik untuk refresh';
+            if (ptrPig)  ptrPig.style.transform = 'scale(1) rotate(0deg)';
+        }
+        document.addEventListener('touchstart', function(e) {
+            if (isRefreshing) return;
+            if (window.scrollY <= 0) { startY = currentY = e.touches[0].pageY; isPulling = true; ptrWrap.style.transition = 'none'; }
+        }, { passive: true });
+        document.addEventListener('touchmove', function(e) {
+            if (!isPulling || isRefreshing) return;
+            currentY = e.touches[0].pageY;
+            var dy = Math.max(0, currentY - startY);
+            if (dy <= 0 || window.scrollY > 0) return;
+            var pull = Math.min(dy * 0.55, MAX_PULL);
+            var prog = Math.min(dy / THRESHOLD, 1);
+            ptrWrap.style.transform = 'translateY(' + (pull - 140) + 'px)';
+            if (ptrBar) ptrBar.style.width = (prog * 100) + '%';
+            if (prog >= 1) {
+                if (ptrText) ptrText.textContent = '🎉 Lepas untuk refresh!';
+                if (ptrBar)  ptrBar.style.background = '#86efac';
+                if (ptrPig)  ptrPig.style.transform = 'scale(1.25) rotate(-15deg)';
+            } else {
+                if (ptrText) ptrText.textContent = '🐷 Tarik untuk refresh...';
+                if (ptrBar)  ptrBar.style.background = '#f9a8d4';
+                if (ptrPig)  ptrPig.style.transform = 'scale(1) rotate(0deg)';
+            }
+        }, { passive: true });
+        document.addEventListener('touchend', function(e) {
+            if (!isPulling || isRefreshing) return;
+            isPulling = false;
+            var dy = currentY - startY;
+            if (dy >= THRESHOLD && window.scrollY <= 0) {
+                isRefreshing = true;
+                ptrWrap.style.transition = 'transform 0.25s ease';
+                ptrWrap.style.transform  = 'translateY(-20px)';
+                if (ptrText) ptrText.textContent = '🐷 Refreshing...';
+                setTimeout(function() { showPigLoader(); setTimeout(function() { window.location.reload(); }, 400); }, 350);
+            } else { snapBack(); }
+            currentY = 0;
+        }, { passive: true });
+    })();
     </script>
     <script>
     // Service Worker
