@@ -92,38 +92,50 @@ class TransactionController extends Controller
 
     public function requestWithdraw(Request $request)
     {
-        // Simulate requesting a withdrawal
         $request->validate([
             'pocket_id' => 'required|exists:pockets,id',
-            'amount' => 'required|numeric|min:1',
-            'message' => 'required|string|max:255',
+            'amount'    => 'required|numeric|min:1',
+            'message'   => 'required|string|max:255',
         ]);
 
-        $transaction = Transaction::create([
-            'pocket_id' => $request->pocket_id,
-            'user_id' => Auth::id(),
-            'type' => 'withdrawal',
-            'amount' => $request->amount,
-            'message' => $request->message,
-            'emoji' => '🚨',
-            'status' => 'pending',
-        ]);
-
-        // Notify partner about withdrawal request
         $user = Auth::user();
         $pocket = Pocket::find($request->pocket_id);
         $formattedAmount = 'Rp ' . number_format($request->amount, 0, ',', '.');
-        if ($user->partner_id) {
-            Notification::notify(
-                $user->partner_id,
-                'withdrawal_request',
-                'Permintaan Penarikan! ⚠️',
-                $user->name . " ingin menarik {$formattedAmount} dari kantong {$pocket->name}: \"{$request->message}\"",
-                '/withdraw',
-                'ph-duotone ph-warning',
-                'bg-pink-100'
-            );
+
+        // Kalau tidak punya pasangan, langsung selesai (auto-approve)
+        if (!$user->partner_id) {
+            Transaction::create([
+                'pocket_id' => $request->pocket_id,
+                'user_id'   => Auth::id(),
+                'type'      => 'withdrawal',
+                'amount'    => $request->amount,
+                'message'   => $request->message,
+                'emoji'     => '💸',
+                'status'    => 'completed',
+            ]);
+            return redirect('/pockets/' . $request->pocket_id)->with('success', 'Penarikan berhasil! Saldo kantong sudah dikurangi.');
         }
+
+        // Kalau punya pasangan, buat pending dan minta persetujuan
+        Transaction::create([
+            'pocket_id' => $request->pocket_id,
+            'user_id'   => Auth::id(),
+            'type'      => 'withdrawal',
+            'amount'    => $request->amount,
+            'message'   => $request->message,
+            'emoji'     => '🚨',
+            'status'    => 'pending',
+        ]);
+
+        Notification::notify(
+            $user->partner_id,
+            'withdrawal_request',
+            'Permintaan Penarikan! ⚠️',
+            $user->name . " ingin menarik {$formattedAmount} dari kantong {$pocket->name}: \"{$request->message}\"",
+            '/withdraw',
+            'ph-duotone ph-warning',
+            'bg-pink-100'
+        );
 
         return redirect('/dashboard')->with('success', 'Permintaan penarikan dikirim ke pasangan!');
     }
