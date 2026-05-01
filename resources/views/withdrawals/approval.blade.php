@@ -119,8 +119,11 @@
 
                 {{-- Approve --}}
                 @if($req->pocket->totalSaved() >= $req->amount)
+                @php
+                    $confirmMsg = 'Setujui penarikan Rp ' . number_format($req->amount, 0, ',', '.') . ' dari kantong ' . $req->pocket->name . '?';
+                @endphp
                 <form action="{{ url('/withdraw/' . $req->id . '/approve') }}" method="POST" class="flex-1"
-                      onsubmit="return confirm('Setujui penarikan Rp {{ number_format($req->amount, 0, \',\', \'.\') }} dari kantong {{ $req->pocket->name }}?')">
+                      onsubmit="return confirm({{ json_encode($confirmMsg) }})">
                     @csrf
                     <button type="submit" class="w-full flex justify-center items-center gap-2 bg-lime-400 border-4 border-slate-800 rounded-2xl py-4 font-black text-slate-800 text-base shadow-cartoon hover:bg-lime-300 active:translate-y-1 active:shadow-none transition-all">
                         <i class="ph-bold ph-check"></i> Setuju
