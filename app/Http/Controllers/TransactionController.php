@@ -116,7 +116,7 @@ class TransactionController extends Controller
         $pocket = Pocket::find($request->pocket_id);
 
         // Pastikan pocket milik user atau pasangannya
-        if ($pocket->creator_id !== $user->id && $pocket->creator_id !== $user->partner_id) {
+        if ((int)$pocket->creator_id !== (int)$user->id && (int)$pocket->creator_id !== (int)$user->partner_id) {
             return back()->withErrors(['pocket_id' => 'Kantong tidak ditemukan.']);
         }
 
@@ -191,10 +191,10 @@ class TransactionController extends Controller
     public function approveWithdraw($id)
     {
         $approver     = Auth::user();
-        $transaction  = Transaction::with('pocket')->findOrFail($id);
+        $transaction  = Transaction::with(['pocket', 'user'])->findOrFail($id);
 
         // Hanya pasangan dari pengaju yang boleh approve
-        if ($transaction->user_id !== $approver->partner_id) {
+        if ((int)$transaction->user_id !== (int)$approver->partner_id) {
             abort(403, 'Kamu tidak punya wewenang untuk menyetujui permintaan ini.');
         }
 
@@ -263,10 +263,10 @@ class TransactionController extends Controller
     public function rejectWithdraw($id)
     {
         $rejecter    = Auth::user();
-        $transaction = Transaction::with('pocket')->findOrFail($id);
+        $transaction = Transaction::with(['pocket', 'user'])->findOrFail($id);
 
         // Hanya pasangan dari pengaju yang boleh reject
-        if ($transaction->user_id !== $rejecter->partner_id) {
+        if ((int)$transaction->user_id !== (int)$rejecter->partner_id) {
             abort(403, 'Kamu tidak punya wewenang untuk menolak permintaan ini.');
         }
 
