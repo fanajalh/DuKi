@@ -44,10 +44,23 @@ class TransactionController extends Controller
             'status'    => 'completed',
         ]);
 
-        // Notify partner about deposit
+        // Notify about deposit
         $user = Auth::user();
         $pocket = Pocket::find($request->pocket_id);
         $formattedAmount = 'Rp ' . number_format($request->amount, 0, ',', '.');
+
+        // Notif ke diri sendiri
+        Notification::notify(
+            $user->id,
+            'deposit',
+            'Nabung Berhasil! 💰',
+            "Kamu menambahkan {$formattedAmount} ke kantong {$pocket->name}" . ($request->message ? ": \"{$request->message}\"" : ''),
+            '/pockets/' . $request->pocket_id,
+            'ph-duotone ph-piggy-bank',
+            'bg-lime-100'
+        );
+
+        // Notif ke pasangan
         if ($user->partner_id) {
             Notification::notify(
                 $user->partner_id,
@@ -113,6 +126,16 @@ class TransactionController extends Controller
                 'emoji'     => '💸',
                 'status'    => 'completed',
             ]);
+            // Notif ke diri sendiri
+            Notification::notify(
+                $user->id,
+                'withdrawal',
+                'Penarikan Berhasil! 💸',
+                "Kamu menarik {$formattedAmount} dari kantong {$pocket->name}: \"{$request->message}\"",
+                '/pockets/' . $request->pocket_id,
+                'ph-duotone ph-hand-coins',
+                'bg-yellow-100'
+            );
             return redirect('/pockets/' . $request->pocket_id)->with('success', 'Penarikan berhasil! Saldo kantong sudah dikurangi.');
         }
 
@@ -127,6 +150,18 @@ class TransactionController extends Controller
             'status'    => 'pending',
         ]);
 
+        // Notif ke diri sendiri
+        Notification::notify(
+            $user->id,
+            'withdrawal_request',
+            'Permintaan Dikirim! 🚨',
+            "Kamu mengajukan penarikan {$formattedAmount} dari kantong {$pocket->name}. Menunggu persetujuan pasangan.",
+            '/notifications',
+            'ph-duotone ph-paper-plane-tilt',
+            'bg-yellow-100'
+        );
+
+        // Notif ke pasangan
         Notification::notify(
             $user->partner_id,
             'withdrawal_request',
