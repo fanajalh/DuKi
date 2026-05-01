@@ -246,7 +246,45 @@
         });
     }
     </script>
+
+    <!-- PWA Install Banner -->
+    <div id="pwa-install-banner" class="fixed bottom-24 md:bottom-6 left-1/2 -translate-x-1/2 z-[9999] w-[360px] max-w-[92vw] hidden" style="animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);">
+        <div class="bg-white border-4 border-slate-800 rounded-3xl p-4 shadow-[6px_6px_0px_0px_rgba(30,41,59,1)] relative">
+            <!-- Close button -->
+            <button onclick="dismissInstallBanner()" class="absolute -top-3 -right-3 w-8 h-8 bg-slate-800 rounded-full flex items-center justify-center text-white text-sm font-black border-2 border-white hover:bg-slate-700 transition-colors">
+                <i class="ph-bold ph-x"></i>
+            </button>
+            
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-12 h-12 bg-lime-400 border-3 border-slate-800 rounded-2xl flex items-center justify-center text-2xl text-white flex-shrink-0" style="border-width: 3px;">
+                    <i class="ph-duotone ph-piggy-bank"></i>
+                </div>
+                <div>
+                    <h3 class="font-black text-slate-800 text-sm leading-tight">Install DuKi App! 🐷</h3>
+                    <p class="text-[11px] font-bold text-slate-500">Akses lebih cepat tanpa buka browser</p>
+                </div>
+            </div>
+            
+            <div class="flex gap-2">
+                <button id="pwa-install-btn" onclick="installPWA()" class="flex-1 bg-lime-400 border-3 border-slate-800 rounded-xl py-2.5 font-black text-sm text-slate-800 shadow-[2px_2px_0px_0px_rgba(30,41,59,1)] hover:-translate-y-0.5 hover:shadow-[2px_4px_0px_0px_rgba(30,41,59,1)] active:translate-y-0 active:shadow-none transition-all flex items-center justify-center gap-1.5" style="border-width: 3px;">
+                    <i class="ph-bold ph-download-simple"></i> Install
+                </button>
+                <button onclick="shareDuKi()" class="flex-1 bg-pink-300 border-3 border-slate-800 rounded-xl py-2.5 font-black text-sm text-slate-800 shadow-[2px_2px_0px_0px_rgba(30,41,59,1)] hover:-translate-y-0.5 hover:shadow-[2px_4px_0px_0px_rgba(30,41,59,1)] active:translate-y-0 active:shadow-none transition-all flex items-center justify-center gap-1.5" style="border-width: 3px;">
+                    <i class="ph-bold ph-share-network"></i> Bagikan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes slideUp {
+            from { opacity: 0; transform: translate(-50%, 30px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+    </style>
+
     <script>
+    // Service Worker
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('/sw.js')
@@ -254,6 +292,105 @@
                 .catch(err => console.log('SW failed:', err));
         });
     }
+
+    // PWA Install Logic
+    let deferredPrompt = null;
+    const installBanner = document.getElementById('pwa-install-banner');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        // Show banner after 2 seconds
+        setTimeout(() => {
+            if (!localStorage.getItem('pwa-dismissed')) {
+                installBanner.classList.remove('hidden');
+            }
+        }, 2000);
+    });
+
+    window.addEventListener('appinstalled', () => {
+        installBanner.classList.add('hidden');
+        deferredPrompt = null;
+        localStorage.setItem('pwa-installed', 'true');
+        Swal.fire({
+            icon: 'success',
+            title: 'DuKi Ter-install! 🎉🐷',
+            text: 'Cek home screen HP kamu, DuKi sudah siap!',
+            confirmButtonText: 'Yay!',
+            confirmButtonColor: '#a3e635',
+            background: '#fffbeb',
+            color: '#1e293b',
+            customClass: { popup: 'rounded-3xl border-4 border-slate-800', confirmButton: 'font-black text-slate-800' }
+        });
+    });
+
+    function installPWA() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choice) => {
+                if (choice.outcome === 'accepted') {
+                    console.log('User accepted install');
+                }
+                deferredPrompt = null;
+            });
+        } else {
+            // Fallback: show instructions
+            Swal.fire({
+                icon: 'info',
+                title: 'Cara Install DuKi 📲',
+                html: '<div style="text-align:left; font-weight:700; font-size:14px; line-height:1.8;">' +
+                      '<b>Android Chrome:</b><br>Klik ⋮ (titik tiga) → "Install app"<br><br>' +
+                      '<b>iPhone Safari:</b><br>Klik <i class="ph-bold ph-export"></i> (share) → "Add to Home Screen"<br><br>' +
+                      '<b>Desktop Chrome:</b><br>Klik ikon 📥 di address bar</div>',
+                confirmButtonText: 'Oke, paham!',
+                confirmButtonColor: '#a3e635',
+                background: '#fffbeb',
+                color: '#1e293b',
+                customClass: { popup: 'rounded-3xl border-4 border-slate-800', confirmButton: 'font-black text-slate-800' }
+            });
+        }
+    }
+
+    function shareDuKi() {
+        const shareData = {
+            title: 'DuKi - Tabungan Bersama',
+            text: 'Yuk nabung bareng pakai DuKi! Aplikasi tabungan seru buat pasangan 🐷💰',
+            url: window.location.origin
+        };
+
+        if (navigator.share) {
+            navigator.share(shareData).catch(() => {});
+        } else {
+            // Fallback: copy link
+            navigator.clipboard.writeText(shareData.url + '\n\n' + shareData.text).then(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Link Disalin! 📋',
+                    text: 'Link DuKi sudah disalin ke clipboard, tinggal paste dan kirim ke pasanganmu!',
+                    confirmButtonText: 'Oke!',
+                    confirmButtonColor: '#a3e635',
+                    background: '#fffbeb',
+                    color: '#1e293b',
+                    customClass: { popup: 'rounded-3xl border-4 border-slate-800', confirmButton: 'font-black text-slate-800' }
+                });
+            });
+        }
+    }
+
+    function dismissInstallBanner() {
+        installBanner.classList.add('hidden');
+        localStorage.setItem('pwa-dismissed', 'true');
+    }
+
+    // Also show banner if on mobile but PWA not installable yet (no beforeinstallprompt - e.g. iOS)
+    setTimeout(() => {
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        if (isIOS && !isStandalone && !localStorage.getItem('pwa-dismissed')) {
+            deferredPrompt = null; // Force fallback mode
+            installBanner.classList.remove('hidden');
+        }
+    }, 3000);
     </script>
 </body>
 </html>

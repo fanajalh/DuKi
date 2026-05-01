@@ -114,5 +114,19 @@
         </form>
     </div>
 
+    <!-- Install & Share Section -->
+    <div class="bg-lime-100 border-4 border-slate-800 rounded-3xl p-6 shadow-cartoon mb-8">
+        <h2 class="text-xl font-black text-slate-800 mb-2 flex items-center gap-2"><i class="ph-duotone ph-device-mobile text-lime-600"></i> Pasang Aplikasi</h2>
+        <p class="text-sm font-bold text-slate-600 mb-4">Install DuKi di HP-mu biar bisa akses langsung tanpa buka browser!</p>
+        <div class="flex gap-3">
+            <button onclick="installPWA()" class="flex-1 bg-lime-400 border-4 border-slate-800 rounded-2xl p-3 font-black text-slate-800 shadow-cartoon hover:bg-lime-500 active:translate-y-1 active:shadow-none transition-all flex justify-center items-center gap-2">
+                <i class="ph-bold ph-download-simple"></i> Install
+            </button>
+            <button onclick="shareDuKi()" class="flex-1 bg-pink-300 border-4 border-slate-800 rounded-2xl p-3 font-black text-slate-800 shadow-cartoon hover:bg-pink-400 active:translate-y-1 active:shadow-none transition-all flex justify-center items-center gap-2">
+                <i class="ph-bold ph-share-network"></i> Bagikan
+            </button>
+        </div>
+    </div>
+
 </div>
 @endsection
